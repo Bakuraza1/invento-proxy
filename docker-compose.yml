@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  invento-traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - "--api.insecure=true" # dashboard (dev only)
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+
+    ports:
+      - "80:80"
+      - "8088:8080" # dashboard
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    networks:
+      - invento-network
+
+networks:
+  invento-network:
+    external: true
