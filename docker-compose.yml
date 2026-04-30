@@ -3,6 +3,7 @@ version: "3.9"
 services:
   invento-traefik:
     image: traefik:v3.6
+    restart: always
     container_name: traefik
     command:
       - "--api.insecure=true" # dashboard (dev only)
