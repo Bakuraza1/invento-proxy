@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+---
+
+# invento-proxy — project knowledge
+
+## What this project is
+
+Shared **Traefik** reverse proxy for the Invento Docker stack. Single place to terminate host HTTP and route to services that opt in with Traefik labels. Not an application API and not a consumer of invento-api.
+
+Operators use this when running the local/server invento network so public hosts (BeyVen FE, MinIO) share one edge.
+
+## Stack and layout
+
+- **Traefik v3.6** only — no app language/runtime
+- Repo content is essentially `docker-compose.yml` (Docker provider, `exposedbydefault=false`)
+- Service/container: `invento-traefik` / `traefik`
+
+## Infrastructure
+
+- **Prerequisite:** external Docker network **`invento-network`**
+- **Ports:** host **80** (HTTP entrypoint `web`), **8088→8080** (dev dashboard, `--api.insecure=true`)
+- **Discovery:** Docker socket (read-only); routes are defined on **sibling** compose files via labels — not in this repo
+- **Known public routes (siblings):** `invento.local` / `www.beyven.store` → frontend; `s3.invento.local` / `s3.beyven.store` → MinIO (`bv-assets-api` compose)
+- **No CI/image build** here — uses public `traefik:v3.6`
+- invento-api, admin, and mcp typically join the same network for DNS but are not all Traefik-labeled
+- **Ecosystem map:** invento-ecosystem `project-knowledge.mdc`
